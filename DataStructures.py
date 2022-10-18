@@ -27,8 +27,13 @@ class PQueueArray:
         return key
     return None
 
-  def insert(self):
-    return
+  def insert(self, node:CS312GraphNode, dist:int, prevNode:CS312GraphNode):
+    self.set_shortest_dist(node, dist)
+    self.set_shortest_dist_prev_node(node, prevNode)
+
+  def addVisited(self, node:CS312GraphNode):
+    self.visitedNodes.add(node)
+
   def decrease_key(self):
     return
 
@@ -55,9 +60,7 @@ class PQueueArray:
   def set_shortest_dist_prev_node(self, node:CS312GraphNode, prevNode:CS312GraphNode):
     self.pathDict.get(node)[1] = prevNode
 
-  def set_shortest_dist_tuple(self, node:CS312GraphNode, dist:int, prevNode:CS312GraphNode):
-    self.set_shortest_dist(node, dist)
-    self.set_shortest_dist_prev_node(node, prevNode)
+
 
   # def __find_min_(self):
   #   minDist = -1
