@@ -5,6 +5,7 @@ class PQueueArray:
   #dict pathDict {CS312Node node : [int distance, CS312Node prevNode]}
   #set CS312Node visitedNodes
   def __init__(self, list=None, sourceId=None):
+    self._idIncrement = 1
     self.pathDict = dict()
     self.visitedNodes = set()
 
@@ -75,7 +76,7 @@ class PQueueArray:
     string = "\nVisited Nodes: "
     if len(self.visitedNodes) != 0:
       for node in self.visitedNodes:
-        string += f"{node.node_id} "
+        string += f"{node.node_id+self._idIncrement} "
       string += '\n'
     else:
       string += "*empty*\n"
@@ -84,10 +85,10 @@ class PQueueArray:
     for key, value in self.pathDict.items():
       table_data.append([])
       if isinstance(key, CS312GraphNode):
-        table_data[len(table_data) - 1].append(key.node_id)
+        table_data[len(table_data) - 1].append(key.node_id+self._idIncrement)
       dist, prevNode = value[0], value[1]
       if prevNode is not None and isinstance(prevNode, CS312GraphNode):
-        prevNode = prevNode.node_id
+        prevNode = prevNode.node_id+self._idIncrement
       if dist is not None:
         table_data[len(table_data) - 1].append(f"[{value[0]:.2f}, {prevNode}]")
       else:
