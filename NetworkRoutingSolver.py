@@ -27,14 +27,14 @@ class NetworkRoutingSolver:
         else:
             # Trace the destination node back to the source, looking up the edges in the table
             currentNode = self.dest
-            print(f"Path: {currentNode.node_id}", end = '')
+            print(f"Shortest Path: {currentNode.node_id+self.queueArray._idIncrement}", end = '')
             while currentNode.node_id != self.sourceId:
                 edgeLen = self.queueArray.get_shortest_dist(currentNode)
                 otherNode = self.queueArray.get_shortest_dist_prev_node(currentNode)
                 path_edges.append((currentNode.loc, otherNode.loc, '{:.0f}'.format(edgeLen)))
                 total_length += edgeLen
                 currentNode = otherNode
-                print(f" <- {otherNode.node_id}", end = '')
+                print(f" <- {otherNode.node_id+self.queueArray._idIncrement}", end = '')
             print('\n')
             # node = self.network.nodes[self.source]
             # edges_left = 3
