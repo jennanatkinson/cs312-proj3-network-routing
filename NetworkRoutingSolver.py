@@ -14,6 +14,7 @@ class NetworkRoutingSolver:
         self.queueArray = None
 
     def getShortestPath(self, destIndex):
+        print(self.queueArray)
         self.dest = self.queueArray.get_node_by_id(destIndex)
         path_edges = []
         total_length = 0
@@ -25,18 +26,18 @@ class NetworkRoutingSolver:
             # Trace the destination node back to the source, working BACKWARDS, looking up the edges in the network
             currentNode = self.dest
             len = 0
-            print(f"Shortest Path: {currentNode.node_id+self.queueArray._idIncrement}", end = '')
+            print(f"Shortest Path: ({currentNode.node_id+self.queueArray._idIncrement})", end = '')
             while currentNode.node_id != self.sourceId:
                 prevNode = self.queueArray.get_dist_prev_node(currentNode)
-                print(f" <- {prevNode.node_id+self.queueArray._idIncrement}", end = '')
                 edgeLen = self.network.getNodeEdge(prevNode.node_id, currentNode.node_id).length
+                print(f" <--{edgeLen:.2f}-- ({prevNode.node_id+self.queueArray._idIncrement})", end = '')
                 path_edges.append((prevNode.loc, currentNode.loc, '{:.0f}'.format(edgeLen)))
                 currentNode = prevNode
                 len += edgeLen # to double check this is compounding properly
             print('\n')
             assert(len == total_length)
-        print(f'Total Cost: {total_length}')
-        print(f'Path: {path_edges}')
+        print(f'Total Cost: {total_length:.2f}')
+        # print(f'Path: {path_edges}')
         print('\n')
         return {'cost':total_length, 'path':path_edges}
 
@@ -45,7 +46,7 @@ class NetworkRoutingSolver:
         t1 = time.time()
         self.queueArray = PQueueArray(self.network.nodes, self.sourceId)
         # Run while there are unvisited nodes
-        print(self.queueArray)
+        #print(self.queueArray)
         while len(self.queueArray.visitedNodes) < len(self.network.nodes):
             # Get the next smallest node/distance that hasn't been visited
             node, dist = self.queueArray.delete_min()
@@ -63,7 +64,7 @@ class NetworkRoutingSolver:
                     self.queueArray.insert(neighborNode, newEdgeDist, node)
             # Add to visitedNodes
             self.queueArray.addVisited(node)
-            print(self.queueArray)
+            #print(self.queueArray)
 
         t2 = time.time()
         return (t2-t1)
