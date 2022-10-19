@@ -25,6 +25,7 @@ class NetworkRoutingSolver:
         if self.queueArray.get_dist(self.dest) is None:
             total_length = float('inf')
         else:
+            total_length = self.queueArray.get_dist(self.dest)
             # Trace the destination node back to the source, looking up the edges in the table
             currentNode = self.dest
             print(f"Shortest Path: {currentNode.node_id+self.queueArray._idIncrement}", end = '')
@@ -32,18 +33,12 @@ class NetworkRoutingSolver:
                 edgeLen = self.queueArray.get_dist(currentNode)
                 otherNode = self.queueArray.get_dist_prev_node(currentNode)
                 path_edges.append((currentNode.loc, otherNode.loc, '{:.0f}'.format(edgeLen)))
-                total_length += edgeLen
                 currentNode = otherNode
                 print(f" <- {otherNode.node_id+self.queueArray._idIncrement}", end = '')
             print('\n')
-            # node = self.network.nodes[self.source]
-            # edges_left = 3
-            # while edges_left > 0:
-            #     edge = node.neighbors[2]
-            #     path_edges.append( (edge.src.loc, edge.dest.loc, '{:.0f}'.format(edge.length)) )
-            #     total_length += edge.length
-            #     node = edge.dest
-            #     edges_left -= 1
+        print(f'Cost: {total_length}')
+        print(f'Path: {path_edges}')
+        print('\n')
         return {'cost':total_length, 'path':path_edges}
 
     def computeShortestPaths(self, srcId, use_heap=False):

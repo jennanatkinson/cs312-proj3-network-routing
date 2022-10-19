@@ -60,8 +60,24 @@ def test_should_returnInf_when_noPath():
   assert(answer['cost'] == float('inf'))
 
 # Test three nodes, with the single edge to dest being larger, but the two combined edges being smaller
-def should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
-  return
+def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
+  solver = NetworkRoutingSolver()
+  # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
+  nodes = [QPointF(0,0), QPointF(10, 10), QPointF(0, 10)]
+  sourceId, midId, destId = 0, 1, 2
+  bigEdgeLen, smallEdgeLen1, smallEdgeLen2 = 10, 1, 2
+  edgeList = [[[midId,smallEdgeLen1], [destId, bigEdgeLen]], [[destId, smallEdgeLen2]], []]
+  graph = CS312Graph(nodes, edgeList)
+  solver.initializeNetwork(graph)
+  
+  solver.computeShortestPaths(sourceId)
+  assert(solver.sourceId == sourceId)
+  assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
+  assert(solver.queueArray.get_dist_by_id(midId) == smallEdgeLen1)
+  assert(solver.queueArray.get_dist_by_id(destId) == (smallEdgeLen1 + smallEdgeLen2))
+  
+  answer = solver.getShortestPath(destId)
+  assert(answer['cost'] == (smallEdgeLen1 + smallEdgeLen2))
 
 # Test example from slides
 def should_pass_when_complexGraph():
