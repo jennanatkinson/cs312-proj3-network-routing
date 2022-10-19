@@ -67,17 +67,6 @@ class PQueueArray:
   def set_dist_prev_node(self, node:CS312GraphNode, prevNode:CS312GraphNode):
     self.pathDict.get(node)[1] = prevNode
 
-
-
-  # def __find_min_(self):
-  #   minDist = -1
-  #   minNode = None
-  #   # Iterate through dict to find min distance
-  #   for key, value in self.pathDict.items():
-  #     if value[0] < minDist:
-  #       minNode = key
-  #   return minNode, minDist
-
   def __str__(self):
     string = "\nVisited Nodes: "
     if len(self.visitedNodes) != 0:
