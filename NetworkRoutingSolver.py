@@ -47,7 +47,7 @@ class NetworkRoutingSolver:
         self.queueArray = PQueueArray(self.network.nodes, self.sourceId)
         # Run while there are unvisited nodes
         #print(self.queueArray)
-        while len(self.queueArray.visitedNodes) < len(self.network.nodes):
+        while self.queueArray.get_num_visited() < len(self.network.nodes):
             # Get the next smallest node/distance that hasn't been visited
             node, dist = self.queueArray.delete_min()
             if node is None:
@@ -61,9 +61,9 @@ class NetworkRoutingSolver:
                 newEdgeDist = dist + node.neighbors[i].length
                 # If new possible distance is less than current distance, update
                 if currentEdgeDist is None or newEdgeDist < currentEdgeDist:
-                    self.queueArray.insert(neighborNode, newEdgeDist, node)
+                    self.queueArray.decrease_key(neighborNode, newEdgeDist, node)
             # Add to visitedNodes
-            self.queueArray.addVisited(node)
+            self.queueArray.add_visited(node)
             #print(self.queueArray)
 
         t2 = time.time()
