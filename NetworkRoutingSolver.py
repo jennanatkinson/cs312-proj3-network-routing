@@ -14,10 +14,6 @@ class NetworkRoutingSolver:
         self.queueArray = None
 
     def getShortestPath(self, destIndex):
-        # TODO: RETURN THE SHORTEST PATH FOR destIndex
-        #       INSTEAD OF THE DUMMY SET OF EDGES BELOW
-        #       IT'S JUST AN EXAMPLE OF THE FORMAT YOU'LL 
-        #       NEED TO USE
         self.dest = self.queueArray.get_node_by_id(destIndex)
         path_edges = []
         total_length = 0
@@ -26,17 +22,20 @@ class NetworkRoutingSolver:
             total_length = float('inf')
         else:
             total_length = self.queueArray.get_dist(self.dest)
-            # Trace the destination node back to the source, looking up the edges in the table
+            # Trace the destination node back to the source, working BACKWARDS, looking up the edges in the network
             currentNode = self.dest
+            len = 0
             print(f"Shortest Path: {currentNode.node_id+self.queueArray._idIncrement}", end = '')
             while currentNode.node_id != self.sourceId:
-                edgeLen = self.queueArray.get_dist(currentNode)
-                otherNode = self.queueArray.get_dist_prev_node(currentNode)
-                path_edges.append((currentNode.loc, otherNode.loc, '{:.0f}'.format(edgeLen)))
-                currentNode = otherNode
-                print(f" <- {otherNode.node_id+self.queueArray._idIncrement}", end = '')
+                prevNode = self.queueArray.get_dist_prev_node(currentNode)
+                print(f" <- {prevNode.node_id+self.queueArray._idIncrement}", end = '')
+                edgeLen = self.network.getNodeEdge(prevNode.node_id, currentNode.node_id).length
+                path_edges.append((prevNode.loc, currentNode.loc, '{:.0f}'.format(edgeLen)))
+                currentNode = prevNode
+                len += edgeLen # to double check this is compounding properly
             print('\n')
-        print(f'Cost: {total_length}')
+            assert(len == total_length)
+        print(f'Total Cost: {total_length}')
         print(f'Path: {path_edges}')
         print('\n')
         return {'cost':total_length, 'path':path_edges}

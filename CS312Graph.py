@@ -46,4 +46,11 @@ class CS312Graph:
 
     def getNodes( self ):
         return self.nodes
+    
+    def getNodeEdge(self, nodeId, destNodeId):
+        node = self.nodes[nodeId]
+        for n in node.neighbors:
+            if (n.dest.node_id == destNodeId):
+                return n
+        return None
 

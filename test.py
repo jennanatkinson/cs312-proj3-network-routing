@@ -76,8 +76,12 @@ def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
   assert(solver.queueArray.get_dist_by_id(midId) == smallEdgeLen1)
   assert(solver.queueArray.get_dist_by_id(destId) == (smallEdgeLen1 + smallEdgeLen2))
   
+  answer = solver.getShortestPath(midId)
+  assert(answer['cost'] == smallEdgeLen1)
+
   answer = solver.getShortestPath(destId)
   assert(answer['cost'] == (smallEdgeLen1 + smallEdgeLen2))
+
 
 # Test example from slides
 def should_pass_when_complexGraph():
