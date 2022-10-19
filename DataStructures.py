@@ -60,6 +60,9 @@ class PQueueArray:
 
   def get_dist_prev_node(self, node:CS312GraphNode):
     return self.pathDict.get(node)[1]
+  
+  def get_dist_prev_node_by_id(self, id:int):
+    return self.get_dist_prev_node(self.get_node_by_id(id))
 
   def set_dist_prev_node(self, node:CS312GraphNode, prevNode:CS312GraphNode):
     self.pathDict.get(node)[1] = prevNode

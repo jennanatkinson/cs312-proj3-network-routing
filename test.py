@@ -74,6 +74,7 @@ def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
   assert(solver.sourceId == sourceId)
   assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
   assert(solver.queueArray.get_dist_by_id(midId) == smallEdgeLen1)
+  assert(solver.queueArray.get_dist_prev_node_by_id(destId).node_id == midId)
   assert(solver.queueArray.get_dist_by_id(destId) == (smallEdgeLen1 + smallEdgeLen2))
   
   answer = solver.getShortestPath(midId)
@@ -83,6 +84,31 @@ def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
   assert(answer['cost'] == (smallEdgeLen1 + smallEdgeLen2))
 
 
-# Test example from slides
-def should_pass_when_complexGraph():
-  return
+# Test example from class slides (lecture 9, slide 109)
+def test_should_pass_when_complexGraph():
+  solver = NetworkRoutingSolver()
+  # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
+  nodes = [QPointF(0,0), QPointF(1, 1), QPointF(2, 2), QPointF(3, 3), QPointF(4, 4), QPointF(5, 5), QPointF(6, 6)]
+  c, d, e, g, h, i, l = 0, 1, 2, 3, 4, 5, 6
+  edgeList = [[[e, 5], [d, 15], [h, 2]], [[h, 3], [i, 4]], [[d, 6]], [[d, 2]], [[i, 1]], [[l, 2]], [[g, 3]]]
+  graph = CS312Graph(nodes, edgeList)
+  solver.initializeNetwork(graph)
+  
+  solver.computeShortestPaths(c)
+  assert(solver.sourceId == c)
+  assert(solver.queueArray.get_dist_by_id(c) == 0)
+  assert(solver.queueArray.get_dist_by_id(d) == 10)
+  assert(solver.queueArray.get_dist_prev_node_by_id(d).node_id == g)
+  assert(solver.queueArray.get_dist_by_id(e) == 5)
+  assert(solver.queueArray.get_dist_prev_node_by_id(e).node_id == c)
+  assert(solver.queueArray.get_dist_by_id(g) == 8)
+  assert(solver.queueArray.get_dist_prev_node_by_id(g).node_id == l)
+  assert(solver.queueArray.get_dist_by_id(h) == 2)
+  assert(solver.queueArray.get_dist_prev_node_by_id(h).node_id == c)
+  assert(solver.queueArray.get_dist_by_id(i) == 3)
+  assert(solver.queueArray.get_dist_prev_node_by_id(i).node_id == h)
+  assert(solver.queueArray.get_dist_by_id(l) == 5)
+  assert(solver.queueArray.get_dist_prev_node_by_id(l).node_id == i)
+  
+  answer = solver.getShortestPath(d)
+  assert(answer['cost'] == 10)
