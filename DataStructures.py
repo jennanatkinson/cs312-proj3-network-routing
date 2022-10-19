@@ -29,8 +29,8 @@ class PQueueArray:
     return None
 
   def insert(self, node:CS312GraphNode, dist:int, prevNode:CS312GraphNode):
-    self.set_shortest_dist(node, dist)
-    self.set_shortest_dist_prev_node(node, prevNode)
+    self.set_dist(node, dist)
+    self.set_dist_prev_node(node, prevNode)
 
   def addVisited(self, node:CS312GraphNode):
     self.visitedNodes.add(node)
@@ -49,16 +49,19 @@ class PQueueArray:
           minDist = value[0]
     return minNode, minDist
 
-  def get_shortest_dist(self, node:CS312GraphNode):
+  def get_dist(self, node:CS312GraphNode):
     return self.pathDict.get(node)[0]
 
-  def set_shortest_dist(self, node:CS312GraphNode, dist:int):
+  def get_dist_by_id(self, id:int):
+    return self.get_dist(self.get_node_by_id(id))
+
+  def set_dist(self, node:CS312GraphNode, dist:int):
     self.pathDict.get(node)[0] = dist
 
-  def get_shortest_dist_prev_node(self, node:CS312GraphNode):
+  def get_dist_prev_node(self, node:CS312GraphNode):
     return self.pathDict.get(node)[1]
 
-  def set_shortest_dist_prev_node(self, node:CS312GraphNode, prevNode:CS312GraphNode):
+  def set_dist_prev_node(self, node:CS312GraphNode, prevNode:CS312GraphNode):
     self.pathDict.get(node)[1] = prevNode
 
 

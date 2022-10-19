@@ -22,15 +22,15 @@ class NetworkRoutingSolver:
         path_edges = []
         total_length = 0
         # If there is no possible distance to the destination
-        if self.queueArray.get_shortest_dist(self.dest) is None:
+        if self.queueArray.get_dist(self.dest) is None:
             total_length = float('inf')
         else:
             # Trace the destination node back to the source, looking up the edges in the table
             currentNode = self.dest
             print(f"Shortest Path: {currentNode.node_id+self.queueArray._idIncrement}", end = '')
             while currentNode.node_id != self.sourceId:
-                edgeLen = self.queueArray.get_shortest_dist(currentNode)
-                otherNode = self.queueArray.get_shortest_dist_prev_node(currentNode)
+                edgeLen = self.queueArray.get_dist(currentNode)
+                otherNode = self.queueArray.get_dist_prev_node(currentNode)
                 path_edges.append((currentNode.loc, otherNode.loc, '{:.0f}'.format(edgeLen)))
                 total_length += edgeLen
                 currentNode = otherNode
@@ -59,7 +59,7 @@ class NetworkRoutingSolver:
             for i in range(len(node.neighbors)):
                 neighborNode = node.neighbors[i].dest
                 # Get the shortest distance logged for that edge
-                currentEdgeDist = self.queueArray.get_shortest_dist(neighborNode)
+                currentEdgeDist = self.queueArray.get_dist(neighborNode)
                 # Calculate what the new distance could be
                 newEdgeDist = dist + node.neighbors[i].length
                 # If new possible distance is less than current distance, update
