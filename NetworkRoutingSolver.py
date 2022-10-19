@@ -35,7 +35,7 @@ class NetworkRoutingSolver:
                 currentNode = prevNode
                 len += edgeLen # to double check this is compounding properly
             print('\n')
-            assert(len == total_length)
+            assert(round(len, 5) == round(total_length, 5))
         print(f'Total Cost: {total_length:.2f}')
         # print(f'Path: {path_edges}')
         print('\n')
