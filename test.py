@@ -27,13 +27,11 @@ def test_should_returnEdgeLen_when_twoNodesOneEdge():
   solver = NetworkRoutingSolver()
   # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
   nodes = [QPointF(0,0), QPointF(10, 10)]
-  sourceId = 0
+  sourceId, destId = 0, 1
   edgeLen = 5
-  destId = 1
   edgeList = [[[destId,edgeLen]], []]
   graph = CS312Graph(nodes, edgeList)
   solver.initializeNetwork(graph)
-  
   
   solver.computeShortestPaths(sourceId)
   assert(solver.sourceId == sourceId)
@@ -44,8 +42,22 @@ def test_should_returnEdgeLen_when_twoNodesOneEdge():
   assert(answer['cost'] == edgeLen)
 
 # Test two nodes with no path between them
-def should_returnInf_when_noPath():
-  return
+def test_should_returnInf_when_noPath():
+  solver = NetworkRoutingSolver()
+  # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
+  nodes = [QPointF(0,0), QPointF(10, 10)]
+  sourceId, destId = 0, 1
+  edgeList = [[], []]
+  graph = CS312Graph(nodes, edgeList)
+  solver.initializeNetwork(graph)
+  
+  solver.computeShortestPaths(sourceId)
+  assert(solver.sourceId == sourceId)
+  assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
+  assert(solver.queueArray.get_dist_by_id(destId) == None)
+  
+  answer = solver.getShortestPath(destId)
+  assert(answer['cost'] == float('inf'))
 
 # Test three nodes, with the single edge to dest being larger, but the two combined edges being smaller
 def should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():

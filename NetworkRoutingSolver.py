@@ -55,6 +55,8 @@ class NetworkRoutingSolver:
         while len(self.queueArray.visitedNodes) < len(self.network.nodes):
             # Get the next smallest node/distance that hasn't been visited
             node, dist = self.queueArray.delete_min()
+            if node is None:
+                break # the only nodes that are left are infinity
             # For each edge aka neighbor of the node
             for i in range(len(node.neighbors)):
                 neighborNode = node.neighbors[i].dest
