@@ -102,9 +102,14 @@ class PQueueArray:
   
 
 class PQueueHeap:
-  def __init__(self):
+  def __init__(self, list=None, sourceId=None):
     self._idIncrement = 1
-    return
+    self.pathDict = dict()
+    self.visitedNodes = set()
+
+    if list is not None:
+      self.make_queue(list, sourceId)
+
   def make_queue(self):
     return
   
