@@ -4,26 +4,38 @@ from PyQt5.QtCore import *
 from CS312Graph import CS312Graph
 from NetworkRoutingSolver import NetworkRoutingSolver
 
-#Tests for computeShortestPaths()
+#Tests for computeShortestPaths() and getShortestPath()
+
+def test_array_should_returnZero_when_singleNodeNoEdges():
+  should_returnZero_when_singleNodeNoEdges(False)
+
+# def test_heap_should_returnZero_when_singleNodeNoEdges():
+#   should_returnZero_when_singleNodeNoEdges(True)
 
 # Test single node as start node and end node
-def test_should_returnZero_when_singleNodeNoEdges():
+def should_returnZero_when_singleNodeNoEdges(use_heap=False):
   solver = NetworkRoutingSolver()
   nodes, edgeList = [QPointF(0,0)], [[]] #empty list of edges
   graph = CS312Graph(nodes, edgeList)
   solver.initializeNetwork(graph)
   sourceId = 0
   
-  solver.computeShortestPaths(sourceId)
+  solver.computeShortestPaths(sourceId, use_heap)
   assert(solver.sourceId == sourceId)
-  assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
+  assert(solver.queue.get_dist_by_id(sourceId) == 0)
   
   answer = solver.getShortestPath(sourceId)
   assert(answer['cost'] == 0)
   assert(answer['path'] == [])
 
+def test_array_should_returnEdgeLen_when_twoNodesOneEdge():
+  should_returnEdgeLen_when_twoNodesOneEdge(False)
+
+# def test_heap_should_returnEdgeLen_when_twoNodesOneEdge():
+#   should_returnEdgeLen_when_twoNodesOneEdge(True)
+
 # Test two nodes, one as start and one as end
-def test_should_returnEdgeLen_when_twoNodesOneEdge():
+def should_returnEdgeLen_when_twoNodesOneEdge(use_heap=False):
   solver = NetworkRoutingSolver()
   # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
   nodes = [QPointF(0,0), QPointF(10, 10)]
@@ -33,16 +45,22 @@ def test_should_returnEdgeLen_when_twoNodesOneEdge():
   graph = CS312Graph(nodes, edgeList)
   solver.initializeNetwork(graph)
   
-  solver.computeShortestPaths(sourceId)
+  solver.computeShortestPaths(sourceId, use_heap)
   assert(solver.sourceId == sourceId)
-  assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
-  assert(solver.queueArray.get_dist_by_id(destId) == edgeLen)
+  assert(solver.queue.get_dist_by_id(sourceId) == 0)
+  assert(solver.queue.get_dist_by_id(destId) == edgeLen)
   
   answer = solver.getShortestPath(destId)
   assert(answer['cost'] == edgeLen)
 
+def test_array_should_returnInf_when_noPath():
+  should_returnInf_when_noPath(False)
+
+# def test_heap_should_returnInf_when_noPath():
+#   should_returnInf_when_noPath(True)
+
 # Test two nodes with no path between them
-def test_should_returnInf_when_noPath():
+def should_returnInf_when_noPath(use_heap=False):
   solver = NetworkRoutingSolver()
   # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
   nodes = [QPointF(0,0), QPointF(10, 10)]
@@ -51,16 +69,22 @@ def test_should_returnInf_when_noPath():
   graph = CS312Graph(nodes, edgeList)
   solver.initializeNetwork(graph)
   
-  solver.computeShortestPaths(sourceId)
+  solver.computeShortestPaths(sourceId, use_heap)
   assert(solver.sourceId == sourceId)
-  assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
-  assert(solver.queueArray.get_dist_by_id(destId) == None)
+  assert(solver.queue.get_dist_by_id(sourceId) == 0)
+  assert(solver.queue.get_dist_by_id(destId) == None)
   
   answer = solver.getShortestPath(destId)
   assert(answer['cost'] == float('inf'))
 
+def test_array_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
+  should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(False)
+
+# def test_heap_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
+#   should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(True)
+
 # Test three nodes, with the single edge to dest being larger, but the two combined edges being smaller
-def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
+def should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(use_heap=False):
   solver = NetworkRoutingSolver()
   # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
   nodes = [QPointF(0,0), QPointF(10, 10), QPointF(0, 10)]
@@ -70,12 +94,12 @@ def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
   graph = CS312Graph(nodes, edgeList)
   solver.initializeNetwork(graph)
   
-  solver.computeShortestPaths(sourceId)
+  solver.computeShortestPaths(sourceId, use_heap)
   assert(solver.sourceId == sourceId)
-  assert(solver.queueArray.get_dist_by_id(sourceId) == 0)
-  assert(solver.queueArray.get_dist_by_id(midId) == smallEdgeLen1)
-  assert(solver.queueArray.get_dist_prev_node_by_id(destId).node_id == midId)
-  assert(solver.queueArray.get_dist_by_id(destId) == (smallEdgeLen1 + smallEdgeLen2))
+  assert(solver.queue.get_dist_by_id(sourceId) == 0)
+  assert(solver.queue.get_dist_by_id(midId) == smallEdgeLen1)
+  assert(solver.queue.get_dist_prev_node_by_id(destId).node_id == midId)
+  assert(solver.queue.get_dist_by_id(destId) == (smallEdgeLen1 + smallEdgeLen2))
   
   answer = solver.getShortestPath(midId)
   assert(answer['cost'] == smallEdgeLen1)
@@ -84,8 +108,14 @@ def test_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
   assert(answer['cost'] == (smallEdgeLen1 + smallEdgeLen2))
 
 
+def test_array_should_pass_when_complexGraph():
+  should_pass_when_complexGraph(False)
+
+# def test_heap_should_pass_when_complexGraph():
+#   should_pass_when_complexGraph(True)
+
 # Test example from class slides (lecture 9, slide 109)
-def test_should_pass_when_complexGraph():
+def should_pass_when_complexGraph(use_heap=False):
   solver = NetworkRoutingSolver()
   # Array of nodes, array of neighborsForEachNode < array of edges < [index of edgeNode, weight of edge]
   nodes = [QPointF(0,0), QPointF(1, 1), QPointF(2, 2), QPointF(3, 3), QPointF(4, 4), QPointF(5, 5), QPointF(6, 6)]
@@ -94,21 +124,21 @@ def test_should_pass_when_complexGraph():
   graph = CS312Graph(nodes, edgeList)
   solver.initializeNetwork(graph)
   
-  solver.computeShortestPaths(c)
+  solver.computeShortestPaths(c, use_heap)
   assert(solver.sourceId == c)
-  assert(solver.queueArray.get_dist_by_id(c) == 0)
-  assert(solver.queueArray.get_dist_by_id(d) == 10)
-  assert(solver.queueArray.get_dist_prev_node_by_id(d).node_id == g)
-  assert(solver.queueArray.get_dist_by_id(e) == 5)
-  assert(solver.queueArray.get_dist_prev_node_by_id(e).node_id == c)
-  assert(solver.queueArray.get_dist_by_id(g) == 8)
-  assert(solver.queueArray.get_dist_prev_node_by_id(g).node_id == l)
-  assert(solver.queueArray.get_dist_by_id(h) == 2)
-  assert(solver.queueArray.get_dist_prev_node_by_id(h).node_id == c)
-  assert(solver.queueArray.get_dist_by_id(i) == 3)
-  assert(solver.queueArray.get_dist_prev_node_by_id(i).node_id == h)
-  assert(solver.queueArray.get_dist_by_id(l) == 5)
-  assert(solver.queueArray.get_dist_prev_node_by_id(l).node_id == i)
+  assert(solver.queue.get_dist_by_id(c) == 0)
+  assert(solver.queue.get_dist_by_id(d) == 10)
+  assert(solver.queue.get_dist_prev_node_by_id(d).node_id == g)
+  assert(solver.queue.get_dist_by_id(e) == 5)
+  assert(solver.queue.get_dist_prev_node_by_id(e).node_id == c)
+  assert(solver.queue.get_dist_by_id(g) == 8)
+  assert(solver.queue.get_dist_prev_node_by_id(g).node_id == l)
+  assert(solver.queue.get_dist_by_id(h) == 2)
+  assert(solver.queue.get_dist_prev_node_by_id(h).node_id == c)
+  assert(solver.queue.get_dist_by_id(i) == 3)
+  assert(solver.queue.get_dist_prev_node_by_id(i).node_id == h)
+  assert(solver.queue.get_dist_by_id(l) == 5)
+  assert(solver.queue.get_dist_prev_node_by_id(l).node_id == i)
   
   answer = solver.getShortestPath(d)
   assert(answer['cost'] == 10)
