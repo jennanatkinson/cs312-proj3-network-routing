@@ -7,30 +7,82 @@ from NetworkRoutingSolver import NetworkRoutingSolver
 
 # Tests for Heap structure
 
-def test_should_adjustArray_when_unbalancedRoot():
+# Mock for CS312Node with node_id member
+class MockNode:
+  def __init__(self, id:int):
+    self.node_id = id
+  
+def test_should_heapify_when_unbalancedRoot():
   heap = PQueueHeap()
-  heap.nodes = [20, 5, 10, 15, 6, 11, 13]
+  # Each id has a dist of the same weight
+  heap.pathDict = {MockNode(5): [5, None], MockNode(6): [6, None], MockNode(10): [10, None], MockNode(11): [11, None], MockNode(13): [13, None], MockNode(15): [15, None], MockNode(20): [20, None]}
+  heap.nodeIdQueue = [20, 5, 10, 15, 6, 11, 13]
   balancedHeap = [5, 6, 10, 15, 20, 11, 13]
 
   heap._heapify(0)
-  assert(heap.nodes == balancedHeap)
+  assert(heap.nodeIdQueue == balancedHeap)
 
-def test_should_adjustArray_when_unbalancedMiddleNode():
+def test_should_heapify_when_unbalancedMiddleNode():
   heap = PQueueHeap()
-  heap.nodes = [5, 6, 14, 15, 20, 11]
+  # Each id has a dist of the same weight
+  heap.pathDict = {MockNode(5): [5, None], MockNode(6): [6, None], MockNode(11): [11, None], MockNode(14): [14, None], MockNode(15): [15, None], MockNode(20): [20, None]}
+  heap.nodeIdQueue = [5, 6, 14, 15, 20, 11]
   balancedHeap = [5, 6, 11, 15, 20, 14]
   
   heap._heapify(2)
-  assert(heap.nodes == balancedHeap)
+  assert(heap.nodeIdQueue == balancedHeap)
+
+def test_should_reverseHeapify_when_unbalancedInsertInMiddle():
+  heap = PQueueHeap()
+  # Each id has a dist of the same weight
+  heap.pathDict = {MockNode(2): [2, None], MockNode(6): [6, None], MockNode(10): [10, None], MockNode(15): [15, None]}
+    
+  heap.nodeIdQueue = [2, 15, 6, 10]
+  finalHeap = [2, 10, 6, 15]
+
+  heap._reverseHeapify(1)
+  assert(heap.nodeIdQueue == finalHeap)
+  assert(heap.get_node_by_id(15) != None) #make sure it didn't delete from pathDict
+
+def test_should_reverseHeapify_when_unbalancedInsertAtEnd():
+  heap = PQueueHeap()
+  # Each id has a dist of the same weight
+  heap.pathDict = {MockNode(1): [1, None], MockNode(2): [2, None], MockNode(6): [6, None], MockNode(10): [10, None], MockNode(15): [15, None]}
+    
+  heap.nodeIdQueue = [2, 10, 6, 15, 1]
+  finalHeap = [1, 2, 6, 15, 10]
+
+  heap._reverseHeapify(len(heap.nodeIdQueue)-1)
+  assert(heap.nodeIdQueue == finalHeap)
+  assert(heap.get_node_by_id(1) != None) #make sure it didn't delete from pathDict
 
 def test_should_deleteMin():
   heap = PQueueHeap()
-  heap.nodes = [2, 3, 6, 10]
+  # Each id has a dist of the same weight
+  heap.pathDict = {MockNode(2): [2, None], MockNode(3): [3, None], MockNode(6): [6, None], MockNode(10): [10, None]}
+    
+  heap.nodeIdQueue = [2, 3, 6, 10]
   finalHeap = [3, 10, 6]
 
   heap.delete_min()
-  assert(heap.nodes == finalHeap)
+  assert(heap.nodeIdQueue == finalHeap)
+  assert(heap.get_node_by_id(2) != None) #make sure it didn't delete from pathDict
 
+def test_should_insert():
+  heap = PQueueHeap()
+  # Each id has a dist of the same weight
+  heap.pathDict = {MockNode(2): [2, None], MockNode(3): [3, None], MockNode(6): [6, None], MockNode(10): [10, None]}
+  heap.nodeIdQueue = [2, 3, 6, 10]
+  finalHeap = [1, 2, 6, 10, 3]
+
+  heap.insert(MockNode(1), 1)
+  assert(heap.nodeIdQueue == finalHeap)
+  assert(heap.get_node_by_id(1) != None) #make sure it added to the dict
+  assert(heap.get_node_by_id(1).node_id == 1)
+  assert(heap.get_dist_by_id(1) == 1) #make sure the weight is correct
+
+#def test_should_makeQueue():
+#def test_should_decreaseKey():
 
 # Tests for computeShortestPaths() and getShortestPath()
 
