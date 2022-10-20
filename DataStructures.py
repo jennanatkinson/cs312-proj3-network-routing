@@ -1,11 +1,10 @@
 from math import floor
 from CS312Graph import *
 
-
 class PQueueArray:
   #idIncrement aka num to add to the ids (0 => the real index, 1=> offset by 1 like the GUI)
-  #dict pathDict {CS312Node node : [int distance, CS312Node prevNode]}
-  #set CS312Node visitedNodes
+  #dict pathDict {CS312GraphNode node : [int distance, CS312GraphNode prevNode]}
+  #set CS312GraphNode visitedNodes
   def __init__(self, list=None, sourceId=None):
     self._idIncrement = 1
     self.pathDict = dict()
@@ -121,7 +120,7 @@ class PQueueHeap:
           dist = 0
         self.insert(list[i], dist, None)
   
-  def insert(self, node:CS312Graph, dist=float('inf'), prevNode=None):
+  def insert(self, node:CS312GraphNode, dist=float('inf'), prevNode=None):
     # Add node to dict
     if (node != None):
       self.pathDict[node] = [dist, prevNode]

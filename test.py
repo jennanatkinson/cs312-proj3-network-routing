@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from CS312Graph import CS312Graph
+from CS312Graph import CS312Graph, CS312GraphNode
 from DataStructures import PQueueHeap
 from NetworkRoutingSolver import NetworkRoutingSolver
 
@@ -12,6 +12,15 @@ class MockNode:
   def __init__(self, id:int):
     self.node_id = id
   
+def test_should_heapify_byWeight():
+  heap = PQueueHeap()
+  heap.pathDict = {MockNode(1): [10, None], MockNode(2): [5, None]}
+  heap.nodeIdQueue = [1, 2]
+  balancedHeap = [2, 1]
+
+  heap._heapify(0)
+  assert(heap.nodeIdQueue == balancedHeap)
+
 def test_should_heapify_when_unbalancedRoot():
   heap = PQueueHeap()
   # Each id has a dist of the same weight
@@ -56,6 +65,21 @@ def test_should_reverseHeapify_when_unbalancedInsertAtEnd():
   assert(heap.nodeIdQueue == finalHeap)
   assert(heap.get_node_by_id(1) != None) #make sure it didn't delete from pathDict
 
+def test_should_makeQueue():
+  heap = PQueueHeap()
+  # Each id has a dist of the same weight
+  list = [CS312GraphNode(2, None), CS312GraphNode(3, None), CS312GraphNode(6, None), CS312GraphNode(10, None)]
+  correctQueue = [10, 2, 3, 6]
+
+  heap.make_queue(list, 10)
+
+  # The source should be first, with 0 dist
+  assert(heap.nodeIdQueue[0] == correctQueue[0])
+  assert(heap.get_dist_by_id(heap.nodeIdQueue[0]) == 0)
+  # All other dist should be inf
+  for i in range(1, len(list)):
+    assert(heap.get_dist_by_id(heap.nodeIdQueue[i]) == float('inf'))
+
 def test_should_deleteMin():
   heap = PQueueHeap()
   # Each id has a dist of the same weight
@@ -71,17 +95,15 @@ def test_should_deleteMin():
 def test_should_insert():
   heap = PQueueHeap()
   # Each id has a dist of the same weight
-  heap.pathDict = {MockNode(2): [2, None], MockNode(3): [3, None], MockNode(6): [6, None], MockNode(10): [10, None]}
+  heap.pathDict = {CS312GraphNode(2, None): [2, None], CS312GraphNode(3, None): [3, None], CS312GraphNode(6, None): [6, None], CS312GraphNode(10, None): [10, None]}
   heap.nodeIdQueue = [2, 3, 6, 10]
   finalHeap = [1, 2, 6, 10, 3]
-
-  heap.insert(MockNode(1), 1)
+  heap.insert(CS312GraphNode(1, None), 1)
   assert(heap.nodeIdQueue == finalHeap)
   assert(heap.get_node_by_id(1) != None) #make sure it added to the dict
   assert(heap.get_node_by_id(1).node_id == 1)
   assert(heap.get_dist_by_id(1) == 1) #make sure the weight is correct
 
-#def test_should_makeQueue():
 #def test_should_decreaseKey():
 
 # Tests for computeShortestPaths() and getShortestPath()
