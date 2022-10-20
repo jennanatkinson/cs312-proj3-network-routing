@@ -2,9 +2,29 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from CS312Graph import CS312Graph
+from DataStructures import PQueueHeap
 from NetworkRoutingSolver import NetworkRoutingSolver
 
-#Tests for computeShortestPaths() and getShortestPath()
+# Tests for Heap structure
+
+def test_should_adjustArray_when_unbalancedRoot():
+  heap = PQueueHeap()
+  heap.nodes = [20, 5, 10, 15, 6, 11, 13]
+  balancedHeap = [5, 6, 10, 15, 20, 11, 13]
+
+  heap._heapify(0)
+  assert(heap.nodes == balancedHeap)
+
+def test_should_adjustArray_when_unbalancedMiddleNode():
+  heap = PQueueHeap()
+  heap.nodes = [5, 6, 14, 15, 20, 11, 13]
+  balancedHeap = [5, 6, 11, 15, 20, 14, 13]
+  
+  heap._heapify(2)
+  assert(heap.nodes == balancedHeap)
+
+
+# Tests for computeShortestPaths() and getShortestPath()
 
 def test_array_should_returnZero_when_singleNodeNoEdges():
   should_returnZero_when_singleNodeNoEdges(False)

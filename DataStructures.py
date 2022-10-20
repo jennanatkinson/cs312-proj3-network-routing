@@ -32,7 +32,7 @@ class PQueueArray:
     self.set_dist(node, dist)
     self.set_dist_prev_node(node, prevNode)
 
-  #Visit the next unvisited smallest node
+  #Visit the next unvisited smallest node, return the node and the dist
   def delete_min(self):
     minNode, minDist = None, None
     # Iterate through dict to find min distance
@@ -86,14 +86,14 @@ class PQueueArray:
     for key, value in self.pathDict.items():
       table_data.append([])
       if isinstance(key, CS312GraphNode):
-        table_data[len(table_data) - 1].append(key.node_id+self._idIncrement)
+        table_data[-1].append(key.node_id+self._idIncrement)
       dist, prevNode = value[0], value[1]
       if prevNode is not None and isinstance(prevNode, CS312GraphNode):
         prevNode = prevNode.node_id+self._idIncrement
       if dist is not None:
-        table_data[len(table_data) - 1].append(f"[{value[0]:.2f}, {prevNode}]")
+        table_data[-1].append(f"[{value[0]:.2f}, {prevNode}]")
       else:
-        table_data[len(table_data) - 1].append(f"[{value[0]}, {prevNode}]")
+        table_data[-1].append(f"[{value[0]}, {prevNode}]")
     for row in table_data:
       string += "{: <7} {: <20}".format(*row) + '\n'
 
@@ -105,7 +105,7 @@ class PQueueHeap:
   def __init__(self, list=None, sourceId=None):
     self._idIncrement = 1
     self.pathDict = dict()
-    self.visitedNodes = set()
+    self.nodes = [] # sorted by the min?
 
     if list is not None:
       self.make_queue(list, sourceId)
@@ -120,8 +120,18 @@ class PQueueHeap:
   def decrease_key(self, node:CS312GraphNode, dist:int, prevNode:CS312GraphNode):
     return
 
+  # Finds the shortest dist node, delete it and return that node and the dist
   def delete_min(self):
-    return
+    if len(self.nodes) == 0:
+      return None, None
+    minNode = self.nodes[0]
+    # Replace root with last element
+    self.nodes[0] = self.nodes[-1]
+    # Delete last element
+    del self.nodes[-1]
+    # Heapify new root
+    self._heapify(0)
+    return minNode, self.get_dist(minNode)
 
   def add_visited(self, node:CS312GraphNode):
     return
@@ -137,6 +147,25 @@ class PQueueHeap:
 
   def get_dist_prev_node(self, node:CS312GraphNode):
     return
+
+  def _heapify(self, initialIndex:int):
+    smallestIndex = initialIndex
+    leftIndex = 2*initialIndex + 1
+    rightIndex = 2*initialIndex + 2
+
+    # Check if left node is larger
+    if leftIndex < len(self.nodes) and self.nodes[leftIndex] < self.nodes[smallestIndex]:
+      smallestIndex = leftIndex
+
+    # Check if right node is larger
+    if rightIndex < len(self.nodes) and self.nodes[rightIndex] < self.nodes[smallestIndex]:
+      smallestIndex = rightIndex
+
+    # If largest is not root, swap and look at sub-tree
+    if (smallestIndex != initialIndex):
+      self.nodes[smallestIndex], self.nodes[initialIndex] = self.nodes[initialIndex], self.nodes[smallestIndex]
+      self._heapify(smallestIndex)
+
 
   def __str_(self):
     return
