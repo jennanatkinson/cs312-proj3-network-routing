@@ -17,11 +17,19 @@ def test_should_adjustArray_when_unbalancedRoot():
 
 def test_should_adjustArray_when_unbalancedMiddleNode():
   heap = PQueueHeap()
-  heap.nodes = [5, 6, 14, 15, 20, 11, 13]
-  balancedHeap = [5, 6, 11, 15, 20, 14, 13]
+  heap.nodes = [5, 6, 14, 15, 20, 11]
+  balancedHeap = [5, 6, 11, 15, 20, 14]
   
   heap._heapify(2)
   assert(heap.nodes == balancedHeap)
+
+def test_should_deleteMin():
+  heap = PQueueHeap()
+  heap.nodes = [2, 3, 6, 10]
+  finalHeap = [3, 10, 6]
+
+  heap.delete_min()
+  assert(heap.nodes == finalHeap)
 
 
 # Tests for computeShortestPaths() and getShortestPath()
