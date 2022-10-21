@@ -212,11 +212,11 @@ class PQueueHeap:
   def set_dist_prev_node(self, node:CS312GraphNode, prevNode:CS312GraphNode):
     self.pathDict.get(node)[1] = prevNode
 
-  def __str_(self):
+  def __str__(self):
     string = "\nNodeId Queue: "
     if len(self.nodeIdQueue) != 0:
-      for node in self.nodeIdQueue:
-        string += f"{node.node_id+self._idIncrement} "
+      for nodeId in self.nodeIdQueue:
+        string += f"{nodeId+self._idIncrement} "
       string += '\n'
     else:
       string += "*empty*\n"
