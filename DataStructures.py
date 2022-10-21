@@ -158,12 +158,9 @@ class PQueueHeap:
   # From the given index, check the parent for swaps and loop up the tree
   def _reverseHeapify(self, startIndex:int):
     i = startIndex
-    print(f"i:{i}")
     while i >= 0:
-      print(self.pathDict)
       self._heapify(i) # this call will not recurse, only potential swap parent with child
       i = floor((i-1)/2) # move up to the parent
-      print(f"i:{i}")
 
   # From the given index, check the left and right children for swaps, recurses down the tree
   def _heapify(self, initialIndex:int):
