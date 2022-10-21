@@ -123,8 +123,8 @@ def test_should_decreaseKey():
 def test_array_should_returnZero_when_singleNodeNoEdges():
   should_returnZero_when_singleNodeNoEdges(False)
 
-# def test_heap_should_returnZero_when_singleNodeNoEdges():
-#   should_returnZero_when_singleNodeNoEdges(True)
+def test_heap_should_returnZero_when_singleNodeNoEdges():
+  should_returnZero_when_singleNodeNoEdges(True)
 
 # Test single node as start node and end node
 def should_returnZero_when_singleNodeNoEdges(use_heap=False):
@@ -145,8 +145,8 @@ def should_returnZero_when_singleNodeNoEdges(use_heap=False):
 def test_array_should_returnEdgeLen_when_twoNodesOneEdge():
   should_returnEdgeLen_when_twoNodesOneEdge(False)
 
-# def test_heap_should_returnEdgeLen_when_twoNodesOneEdge():
-#   should_returnEdgeLen_when_twoNodesOneEdge(True)
+def test_heap_should_returnEdgeLen_when_twoNodesOneEdge():
+  should_returnEdgeLen_when_twoNodesOneEdge(True)
 
 # Test two nodes, one as start and one as end
 def should_returnEdgeLen_when_twoNodesOneEdge(use_heap=False):
@@ -170,8 +170,8 @@ def should_returnEdgeLen_when_twoNodesOneEdge(use_heap=False):
 def test_array_should_returnInf_when_noPath():
   should_returnInf_when_noPath(False)
 
-# def test_heap_should_returnInf_when_noPath():
-#   should_returnInf_when_noPath(True)
+def test_heap_should_returnInf_when_noPath():
+  should_returnInf_when_noPath(True)
 
 # Test two nodes with no path between them
 def should_returnInf_when_noPath(use_heap=False):
@@ -186,7 +186,8 @@ def should_returnInf_when_noPath(use_heap=False):
   solver.computeShortestPaths(sourceId, use_heap)
   assert(solver.sourceId == sourceId)
   assert(solver.queue.get_dist_by_id(sourceId) == 0)
-  assert(solver.queue.get_dist_by_id(destId) == None)
+  assert(solver.queue.get_dist_by_id(destId) == None 
+  or solver.queue.get_dist_by_id(destId) == float('inf'))
   
   answer = solver.getShortestPath(destId)
   assert(answer['cost'] == float('inf'))
@@ -194,8 +195,8 @@ def should_returnInf_when_noPath(use_heap=False):
 def test_array_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
   should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(False)
 
-# def test_heap_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
-#   should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(True)
+def test_heap_should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges():
+  should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(True)
 
 # Test three nodes, with the single edge to dest being larger, but the two combined edges being smaller
 def should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(use_heap=False):
@@ -225,8 +226,8 @@ def should_returnSmallerCombinedEdge_when_multipleNodesMultipleEdges(use_heap=Fa
 def test_array_should_pass_when_complexGraph():
   should_pass_when_complexGraph(False)
 
-# def test_heap_should_pass_when_complexGraph():
-#   should_pass_when_complexGraph(True)
+def test_heap_should_pass_when_complexGraph():
+  should_pass_when_complexGraph(True)
 
 # Test example from class slides (lecture 9, slide 109)
 def should_pass_when_complexGraph(use_heap=False):
