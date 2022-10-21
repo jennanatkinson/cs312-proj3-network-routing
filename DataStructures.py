@@ -131,6 +131,7 @@ class PQueueHeap:
 
   # Replace new shortest distance and prevNode for a specific node
   def decrease_key(self, node:CS312GraphNode, dist:int, prevNode:CS312GraphNode):
+    assert(dist <= self.get_dist(node))
     self.set_dist(node, dist)
     self.set_dist_prev_node(node, prevNode)
     # Reorder queue based on the updated distance

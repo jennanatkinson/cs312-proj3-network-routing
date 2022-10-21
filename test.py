@@ -104,7 +104,19 @@ def test_should_insert():
   assert(heap.get_node_by_id(1).node_id == 1)
   assert(heap.get_dist_by_id(1) == 1) #make sure the weight is correct
 
-#def test_should_decreaseKey():
+def test_should_decreaseKey():
+  heap = PQueueHeap()
+  nodeToUpdate = CS312GraphNode(15, None)
+  # Each id has a dist of the same weight
+  heap.pathDict = {CS312GraphNode(2, None): [2, None], CS312GraphNode(6, None): [6, None], CS312GraphNode(10, None): [10, None], nodeToUpdate: [15, None]}
+  
+  heap.nodeIdQueue = [2, 10, 6, 15]
+  finalHeap = [15, 2, 6, 10] #node 15 will have a weight of 1
+
+  newDist = 1
+  heap.decrease_key(nodeToUpdate, newDist, None)
+  assert(heap.nodeIdQueue == finalHeap)
+  assert(heap.get_dist(nodeToUpdate) == newDist) #make sure it didn't delete from pathDict
 
 # Tests for computeShortestPaths() and getShortestPath()
 
