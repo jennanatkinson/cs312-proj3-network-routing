@@ -14,7 +14,7 @@ class NetworkRoutingSolver:
         self.queue = None
 
     def getShortestPath(self, destIndex):
-        print(self.queue)
+        # print(self.queue)
         self.dest = self.queue.get_node_by_id(destIndex)
         path_edges = []
         total_length = 0
@@ -26,19 +26,18 @@ class NetworkRoutingSolver:
             # Trace the destination node back to the source, working BACKWARDS, looking up the edges in the network
             currentNode = self.dest
             len = 0
-            print(f"Shortest Path: ({currentNode.node_id+self.queue._idIncrement})", end = '')
+            # print(f"Shortest Path: ({currentNode.node_id+self.queue._idIncrement})", end = '')
             while currentNode.node_id != self.sourceId:
                 prevNode = self.queue.get_dist_prev_node(currentNode)
                 edgeLen = self.network.getNodeEdge(prevNode.node_id, currentNode.node_id).length
-                print(f" <--{edgeLen:.2f}-- ({prevNode.node_id+self.queue._idIncrement})", end = '')
+                # print(f" <--{edgeLen:.2f}-- ({prevNode.node_id+self.queue._idIncrement})", end = '')
                 path_edges.append((prevNode.loc, currentNode.loc, '{:.0f}'.format(edgeLen)))
                 currentNode = prevNode
                 len += edgeLen # to double check this is compounding properly
-            print('\n')
+            # print('\n')
             assert(round(len, 5) == round(total_length, 5))
-        print(f'Total Cost: {total_length:.2f}')
-        # print(f'Path: {path_edges}')
-        print('\n')
+        # print(f'Total Cost: {total_length:.2f}')
+        # print(f'Path: {path_edges}\n')
         return {'cost':total_length, 'path':path_edges}
 
     def computeShortestPaths(self, srcId, use_heap=False):
@@ -49,7 +48,7 @@ class NetworkRoutingSolver:
         else:
             self.queue = PQueueArray(self.network.nodes, self.sourceId)
         # Run while there are unvisited nodes
-        print(self.queue)
+        # print(self.queue)
         while self.queue.get_num_visited() < len(self.network.nodes):
             # Get the next smallest node/distance that hasn't been visited, add to visited
             node, dist = self.queue.delete_min()
@@ -65,7 +64,7 @@ class NetworkRoutingSolver:
                 # If new possible distance is less than current distance, update
                 if currentEdgeDist is None or newEdgeDist < currentEdgeDist:
                     self.queue.decrease_key(neighborNode, newEdgeDist, node)
-            print(self.queue)
+            # print(self.queue)
 
         t2 = time.time()
         return (t2-t1)
