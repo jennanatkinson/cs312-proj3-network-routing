@@ -19,7 +19,7 @@ class NetworkRoutingSolver:
         path_edges = []
         total_length = 0
         # If there is no possible distance to the destination
-        if self.queue.get_dist(self.dest) is None:
+        if self.queue.get_dist(self.dest) is None or self.queue.get_dist(self.dest) == float('inf'):
             total_length = float('inf')
         else:
             total_length = self.queue.get_dist(self.dest)
@@ -51,9 +51,9 @@ class NetworkRoutingSolver:
         # Run while there are unvisited nodes
         #print(self.queueArray)
         while self.queue.get_num_visited() < len(self.network.nodes):
-            # Get the next smallest node/distance that hasn't been visited
+            # Get the next smallest node/distance that hasn't been visited, add to visited
             node, dist = self.queue.delete_min()
-            if node is None:
+            if node is None or dist == float('inf'):
                 break # the only nodes that are left are infinity
             # For each edge aka neighbor of the node
             for i in range(len(node.neighbors)):
@@ -65,8 +65,6 @@ class NetworkRoutingSolver:
                 # If new possible distance is less than current distance, update
                 if currentEdgeDist is None or newEdgeDist < currentEdgeDist:
                     self.queue.decrease_key(neighborNode, newEdgeDist, node)
-            # Add to visitedNodes
-            self.queue.add_visited(node)
             #print(self.queueArray)
 
         t2 = time.time()
