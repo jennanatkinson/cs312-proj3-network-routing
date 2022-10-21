@@ -14,7 +14,7 @@ class CS312GraphEdge:
         return '(src={} dest={} length={})'.format(self.src,self.dest,self.length)
 
 class CS312GraphNode:
-    def __init__( self, node_id, node_loc ):
+    def __init__( self, node_id, node_loc=None):
         self.node_id   = node_id
         self.loc       = node_loc
         self.neighbors = [] #node_neighbors

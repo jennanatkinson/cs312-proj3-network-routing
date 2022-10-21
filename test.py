@@ -7,115 +7,119 @@ from NetworkRoutingSolver import NetworkRoutingSolver
 
 # Tests for Heap structure
 
-# Mock for CS312Node with node_id member
-class MockNode:
-  def __init__(self, id:int):
-    self.node_id = id
-  
 def test_should_heapify_byWeight():
   heap = PQueueHeap()
-  heap.pathDict = {MockNode(1): [10, None], MockNode(2): [5, None]}
-  heap.nodeIdQueue = [1, 2]
-  balancedHeap = [2, 1]
+  one, two = CS312GraphNode(1), CS312GraphNode(2)
+  
+  heap.pathDict = {one: [10, None], two: [5, None]}
+  heap.nodeQueue = [one, two]
+  balancedHeap = [two, one]
 
   heap._heapify(0)
-  assert(heap.nodeIdQueue == balancedHeap)
+  assert(heap.nodeQueue == balancedHeap)
 
 def test_should_heapify_when_unbalancedRoot():
   heap = PQueueHeap()
+  five, six, ten, eleven, thirteen, fifteen, twenty = CS312GraphNode(5), CS312GraphNode(6), CS312GraphNode(10), CS312GraphNode(11), CS312GraphNode(13), CS312GraphNode(15), CS312GraphNode(20)
   # Each id has a dist of the same weight
-  heap.pathDict = {MockNode(5): [5, None], MockNode(6): [6, None], MockNode(10): [10, None], MockNode(11): [11, None], MockNode(13): [13, None], MockNode(15): [15, None], MockNode(20): [20, None]}
-  heap.nodeIdQueue = [20, 5, 10, 15, 6, 11, 13]
-  balancedHeap = [5, 6, 10, 15, 20, 11, 13]
+  heap.pathDict = {five: [5, None], six: [6, None], ten: [10, None], eleven: [11, None], thirteen: [13, None], fifteen: [15, None], twenty: [20, None]}
+  heap.nodeQueue = [twenty, five, ten, fifteen, six, eleven, thirteen]
+  balancedHeap = [five, six, ten, fifteen, twenty, eleven, thirteen]
 
   heap._heapify(0)
-  assert(heap.nodeIdQueue == balancedHeap)
+  assert(heap.nodeQueue == balancedHeap)
 
 def test_should_heapify_when_unbalancedMiddleNode():
   heap = PQueueHeap()
+  five, six, eleven, fourteen, fifteen, twenty = CS312GraphNode(5), CS312GraphNode(6), CS312GraphNode(11), CS312GraphNode(13), CS312GraphNode(14), CS312GraphNode(20)
   # Each id has a dist of the same weight
-  heap.pathDict = {MockNode(5): [5, None], MockNode(6): [6, None], MockNode(11): [11, None], MockNode(14): [14, None], MockNode(15): [15, None], MockNode(20): [20, None]}
-  heap.nodeIdQueue = [5, 6, 14, 15, 20, 11]
-  balancedHeap = [5, 6, 11, 15, 20, 14]
+  heap.pathDict = {five: [5, None], six: [6, None], eleven: [11, None], fourteen: [14, None], fifteen: [15, None], twenty: [20, None]}
+  heap.nodeQueue = [five, six, fourteen, fifteen, twenty, eleven]
+  balancedHeap = [five, six, eleven, fifteen, twenty, fourteen]
   
   heap._heapify(2)
-  assert(heap.nodeIdQueue == balancedHeap)
+  assert(heap.nodeQueue == balancedHeap)
 
 def test_should_reverseHeapify_when_unbalancedInsertInMiddle():
   heap = PQueueHeap()
+  two, six, ten, fifteen = CS312GraphNode(2), CS312GraphNode(6), CS312GraphNode(10), CS312GraphNode(15)
   # Each id has a dist of the same weight
-  heap.pathDict = {MockNode(2): [2, None], MockNode(6): [6, None], MockNode(10): [10, None], MockNode(15): [15, None]}
+  heap.pathDict = {two: [2, None], six: [6, None], ten: [10, None], fifteen: [15, None]}
     
-  heap.nodeIdQueue = [2, 15, 6, 10]
-  finalHeap = [2, 10, 6, 15]
+  heap.nodeQueue = [two, fifteen, six, ten]
+  finalHeap = [two, ten, six, fifteen]
 
   heap._reverseHeapify(1)
-  assert(heap.nodeIdQueue == finalHeap)
-  assert(heap.get_node_by_id(15) != None) #make sure it didn't delete from pathDict
+  assert(heap.nodeQueue == finalHeap)
+  assert(heap.pathDict.get(fifteen) != None) #make sure it didn't delete from pathDict
 
 def test_should_reverseHeapify_when_unbalancedInsertAtEnd():
   heap = PQueueHeap()
+  one, two, six, ten, fifteen = CS312GraphNode(1), CS312GraphNode(2), CS312GraphNode(6), CS312GraphNode(10), CS312GraphNode(15)
   # Each id has a dist of the same weight
-  heap.pathDict = {MockNode(1): [1, None], MockNode(2): [2, None], MockNode(6): [6, None], MockNode(10): [10, None], MockNode(15): [15, None]}
+  heap.pathDict = {one: [1, None], two: [2, None], six: [6, None], ten: [10, None], fifteen: [15, None]}
     
-  heap.nodeIdQueue = [2, 10, 6, 15, 1]
-  finalHeap = [1, 2, 6, 15, 10]
+  heap.nodeQueue = [two, ten, six, fifteen, one]
+  finalHeap = [one, two, six, fifteen, ten]
 
-  heap._reverseHeapify(len(heap.nodeIdQueue)-1)
-  assert(heap.nodeIdQueue == finalHeap)
-  assert(heap.get_node_by_id(1) != None) #make sure it didn't delete from pathDict
+  heap._reverseHeapify(len(heap.nodeQueue)-1)
+  assert(heap.nodeQueue == finalHeap)
+  assert(heap.pathDict.get(one) != None) #make sure it didn't delete from pathDict
 
 def test_should_makeQueue():
   heap = PQueueHeap()
+  two, three, six, ten = CS312GraphNode(2), CS312GraphNode(3), CS312GraphNode(6), CS312GraphNode(10)
   # Each id has a dist of the same weight
-  list = [CS312GraphNode(2, None), CS312GraphNode(3, None), CS312GraphNode(6, None), CS312GraphNode(10, None)]
-  correctQueue = [10, 2, 3, 6]
+  list = [two, three, six, ten]
+  correctQueue = [ten, two, three, six]
 
-  heap.make_queue(list, 10)
-
+  heap.make_queue(list, ten.node_id)
+  print(heap)
   # The source should be first, with 0 dist
-  assert(heap.nodeIdQueue[0] == correctQueue[0])
-  assert(heap.get_dist_by_id(heap.nodeIdQueue[0]) == 0)
+  assert(heap.nodeQueue[0] == correctQueue[0])
+  assert(heap.get_dist(ten) == 0)
   # All other dist should be inf
   for i in range(1, len(list)):
-    assert(heap.get_dist_by_id(heap.nodeIdQueue[i]) == float('inf'))
+    assert(heap.get_dist(heap.nodeQueue[i]) == float('inf'))
 
 def test_should_deleteMin():
   heap = PQueueHeap()
+  two, three, six, ten = CS312GraphNode(2), CS312GraphNode(3), CS312GraphNode(6), CS312GraphNode(10)
   # Each id has a dist of the same weight
-  heap.pathDict = {MockNode(2): [2, None], MockNode(3): [3, None], MockNode(6): [6, None], MockNode(10): [10, None]}
+  heap.pathDict = {two: [2, None], three: [3, None], six: [6, None], ten: [10, None]}
     
-  heap.nodeIdQueue = [2, 3, 6, 10]
-  finalHeap = [3, 10, 6]
+  heap.nodeQueue = [two, three, six, ten]
+  finalHeap = [three, ten, six]
 
   heap.delete_min()
-  assert(heap.nodeIdQueue == finalHeap)
-  assert(heap.get_node_by_id(2) != None) #make sure it didn't delete from pathDict
+  assert(heap.nodeQueue == finalHeap)
+  assert(heap.pathDict.get(two) != None) #make sure it didn't delete from pathDict
 
 def test_should_insert():
   heap = PQueueHeap()
+  one, two, three, six, ten = CS312GraphNode(1, None), CS312GraphNode(2, None), CS312GraphNode(3, None), CS312GraphNode(6, None), CS312GraphNode(10, None)
   # Each id has a dist of the same weight
-  heap.pathDict = {CS312GraphNode(2, None): [2, None], CS312GraphNode(3, None): [3, None], CS312GraphNode(6, None): [6, None], CS312GraphNode(10, None): [10, None]}
-  heap.nodeIdQueue = [2, 3, 6, 10]
-  finalHeap = [1, 2, 6, 10, 3]
-  heap.insert(CS312GraphNode(1, None), 1)
-  assert(heap.nodeIdQueue == finalHeap)
-  assert(heap.get_node_by_id(1) != None) #make sure it added to the dict
-  assert(heap.get_node_by_id(1).node_id == 1)
-  assert(heap.get_dist_by_id(1) == 1) #make sure the weight is correct
+  heap.pathDict = {two: [2, None], three: [3, None], six: [6, None], ten: [10, None]}
+  heap.nodeQueue = [two, three, six, ten]
+  finalHeap = [one, two, six, ten, three]
+  heap.insert(one, 1)
+  assert(heap.nodeQueue == finalHeap)
+  assert(heap.pathDict.get(one) != None) #make sure it added to the dict
+  assert(heap.get_dist(one) == 1) #make sure the weight is correct
 
 def test_should_decreaseKey():
   heap = PQueueHeap()
   nodeToUpdate = CS312GraphNode(15, None)
+  two, six, ten = CS312GraphNode(2, None), CS312GraphNode(6, None), CS312GraphNode(10, None)
   # Each id has a dist of the same weight
-  heap.pathDict = {CS312GraphNode(2, None): [2, None], CS312GraphNode(6, None): [6, None], CS312GraphNode(10, None): [10, None], nodeToUpdate: [15, None]}
+  heap.pathDict = {two: [2, None], six: [6, None], ten: [10, None], nodeToUpdate: [15, None]}
   
-  heap.nodeIdQueue = [2, 10, 6, 15]
-  finalHeap = [15, 2, 6, 10] #node 15 will have a weight of 1
+  heap.nodeQueue = [two, ten, six, nodeToUpdate]
+  finalHeap = [nodeToUpdate, two, six, ten] #node 15 will have a weight of 1
 
   newDist = 1
   heap.decrease_key(nodeToUpdate, newDist, None)
-  assert(heap.nodeIdQueue == finalHeap)
+  assert(heap.nodeQueue == finalHeap)
   assert(heap.get_dist(nodeToUpdate) == newDist) #make sure it didn't delete from pathDict
 
 # Tests for computeShortestPaths() and getShortestPath()

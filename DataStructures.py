@@ -6,7 +6,7 @@ class PQueueArray:
   #idIncrement aka num to add to the ids (0 => the real index, 1=> offset by 1 like the GUI)
   #dict pathDict {CS312GraphNode node : [int distance, CS312GraphNode prevNode]}
   #set CS312GraphNode visitedNodes
-  def __init__(self, list=None, sourceId=None):
+  def __init__(self, list=None, sourceId:int=None):
     self._idIncrement = 1
     self.pathDict = dict()
     self.visitedNodes = set()
@@ -15,7 +15,7 @@ class PQueueArray:
       self.make_queue(list, sourceId)
 
   # Set up dictionary of nodes, with max len distances
-  def make_queue(self, list, sourceId=None):
+  def make_queue(self, list, sourceId:int=None):
     for i in range(len(list)):
       if isinstance(list[i], CS312GraphNode):
         # Put the keys in the dictionary, with null distance and prevNode
@@ -104,16 +104,16 @@ class PQueueArray:
 
 class PQueueHeap:
   #Note: uses inf for distance
-  def __init__(self, list=None, sourceId=None):
+  def __init__(self, list=None, sourceId:int=None):
     self._idIncrement = 1
     self.pathDict = dict() #CS312GraphNodes : [dist:int, prev:CS312GraphNodes]
-    self.nodeIdQueue = [] #array of nodeIds, sorted by the min dist, 
+    self.nodeQueue = [] #array of CS312GraphNodes, sorted by the min dist, 
 
     if list is not None:
       self.make_queue(list, sourceId)
 
   # Set up dictionary of nodes, with max len distances
-  def make_queue(self, list, sourceId=None):
+  def make_queue(self, list, sourceId:int=None):
     for i in range(len(list)):
       if isinstance(list[i], CS312GraphNode):
         # Put the keys in the dictionary, with distance and null prevNode
@@ -127,9 +127,9 @@ class PQueueHeap:
     if (node != None):
       self.pathDict[node] = [dist, prevNode]
     # Add nodeId as the last element
-    self.nodeIdQueue.append(node.node_id)
+    self.nodeQueue.append(node)
     # Reorder queue based on that new element
-    self._reverseHeapify(len(self.nodeIdQueue)-1)
+    self._reverseHeapify(len(self.nodeQueue)-1)
 
   # Replace new shortest distance and prevNode for a specific node
   def decrease_key(self, node:CS312GraphNode, dist:int, prevNode:CS312GraphNode):
@@ -137,19 +137,19 @@ class PQueueHeap:
     self.set_dist(node, dist)
     self.set_dist_prev_node(node, prevNode)
     # Reorder queue based on the updated distance
-    self._reverseHeapify(self.nodeIdQueue.index(node.node_id))
+    self._reverseHeapify(self.nodeQueue.index(node))
 
   # Finds the shortest dist node, delete it and return that node and the dist
   def delete_min(self):
-    if len(self.nodeIdQueue) == 0:
+    if len(self.nodeQueue) == 0:
       return None, None
-    oldRoot = self.get_node_by_id(self.nodeIdQueue[0])
+    oldRoot = self.nodeQueue[0]
 
     # Reorganize remaining queue elements
     # Replace root with last element
-    self.nodeIdQueue[0] = self.nodeIdQueue[-1]
+    self.nodeQueue[0] = self.nodeQueue[-1]
     # Delete last element
-    del self.nodeIdQueue[-1]
+    del self.nodeQueue[-1]
     # Heapify new root
     self._heapify(0)
 
@@ -167,25 +167,25 @@ class PQueueHeap:
     smallestIndex = initialIndex
     leftIndex = 2*initialIndex + 1
     rightIndex = 2*initialIndex + 2
-
+    
     # Check if left node dist is smaller
-    if (leftIndex < len(self.nodeIdQueue) 
-      and self.get_dist_by_id(self.nodeIdQueue[leftIndex]) < self.get_dist_by_id(self.nodeIdQueue[smallestIndex])):
+    if (leftIndex < len(self.nodeQueue) 
+      and self.get_dist(self.nodeQueue[leftIndex]) < self.get_dist(self.nodeQueue[smallestIndex])):
       smallestIndex = leftIndex
 
     # Check if right node dist is smaller
-    if (rightIndex < len(self.nodeIdQueue) 
-      and self.get_dist_by_id(self.nodeIdQueue[rightIndex]) < self.get_dist_by_id(self.nodeIdQueue[smallestIndex])):
+    if (rightIndex < len(self.nodeQueue) 
+      and self.get_dist(self.nodeQueue[rightIndex]) < self.get_dist(self.nodeQueue[smallestIndex])):
       smallestIndex = rightIndex
 
     # If smallest is not root, swap and look at sub-tree
     if (smallestIndex != initialIndex):
-      self.nodeIdQueue[smallestIndex], self.nodeIdQueue[initialIndex] = self.nodeIdQueue[initialIndex], self.nodeIdQueue[smallestIndex]
+      self.nodeQueue[smallestIndex], self.nodeQueue[initialIndex] = self.nodeQueue[initialIndex], self.nodeQueue[smallestIndex]
       self._heapify(smallestIndex)
 
   def get_num_visited(self):
     # totalNodes - nodes left to visit
-    return len(self.pathDict) - len(self.nodeIdQueue)
+    return len(self.pathDict) - len(self.nodeQueue)
 
   # Same helpers as PQueueArray
   def get_node_by_id(self, nodeId:int):
@@ -214,9 +214,9 @@ class PQueueHeap:
 
   def __str__(self):
     string = "\nNodeId Queue: "
-    if len(self.nodeIdQueue) != 0:
-      for nodeId in self.nodeIdQueue:
-        string += f"{nodeId+self._idIncrement} "
+    if len(self.nodeQueue) != 0:
+      for node in self.nodeQueue:
+        string += f"{node.node_id+self._idIncrement} "
       string += '\n'
     else:
       string += "*empty*\n"
